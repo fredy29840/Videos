@@ -35,7 +35,7 @@ git clone <ce dépôt> && cd Videos
 | `-s` | Stabilisation en 2 passes (vid.stab) |
 | `-d` | Désentrelacement (bwdif) – pour les lignes « peigne » des vidéos TV/VHS/DV |
 | `-c` | Léger renfort du contraste et des couleurs |
-| `--audio auto\|voix\|musique\|aucun\|copie` | Traitement du son |
+| `--audio auto\|voix\|ambiance\|musique\|aucun\|copie` | Traitement du son. `ambiance` : cris, pleurs, animaux, caméras de surveillance (pas de modèle « voix » qui effacerait ces sons, forte remontée des sons faibles) |
 | `--voix-ia` | Débruitage voix DeepFilterNet au lieu de RNNoise |
 | `--x265`, `--crf N` | Codec H.265 (plus petit) ; qualité (18 par défaut, 14-16 = très haute) |
 | `--essai SEC` | N'encode que les SEC premières secondes |
@@ -45,6 +45,8 @@ git clone <ce dépôt> && cd Videos
 **Vidéo** (dans l'ordre) : désentrelacement → stabilisation → débruitage (hqdn3d ou nlmeans) → suppression des bandes de couleur (deband) → agrandissement → couleurs → netteté adaptative (CAS) → H.264 CRF 18.
 
 **Voix** : coupe des grondements < 70 Hz → débruitage RNNoise (réseau de neurones, filtre `arnndn`) ou FFT si modèle absent → présence à 3 kHz → réduction des sifflantes → compresseur → normalisation EBU R128 à −16 LUFS (niveau YouTube/podcast).
+
+**Ambiance** : coupe < 90 Hz → débruitage FFT doux → remontée des passages faibles (jusqu'à +26 dB) → −18 LUFS.
 
 **Musique** : débruitage FFT doux + normalisation à −14 LUFS.
 

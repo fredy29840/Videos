@@ -10,7 +10,8 @@
 #   -s, --stabiliser                   Stabiliser une vidéo tremblante (2 passes)
 #   -d, --desentrelacer                Désentrelacer (vieilles cassettes, TV, DV)
 #   -c, --couleurs                     Léger renfort contraste/saturation
-#       --audio MODE                   auto|voix|musique|aucun|copie (défaut : auto)
+#       --audio MODE                   auto|voix|ambiance|musique|aucun|copie (défaut : auto)
+#                                    ambiance = cris, pleurs, animaux, caméra de surveillance
 #       --voix-ia                      Débruiter la voix avec DeepFilterNet (si installé)
 #       --x265                         Encoder en H.265 (fichier plus petit, plus lent)
 #       --crf N                        Qualité (défaut 18 ; plus petit = meilleur)
@@ -25,7 +26,7 @@ OUTILS="$DIR/outils"
 ENTREE=""; SORTIE=""; PRESET="standard"; ECHELLE=1; HD=0; IA=0
 STAB=0; DESENTR=0; COULEURS=0; AUDIO="auto"; VOIX_IA=0; CODEC="libx264"; CRF=18; ESSAI=""
 
-aide() { sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
+aide() { sed -n '2,21p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -78,6 +79,8 @@ filtre_audio() {
       fi
       f="$f,lowpass=f=12000,equalizer=f=3000:t=q:w=1.5:g=2,deesser=i=0.3"
       f="$f,acompressor=threshold=-20dB:ratio=3:attack=10:release=200,loudnorm=I=-16:TP=-1.5:LRA=11" ;;
+    ambiance)
+      f="highpass=f=90,afftdn=nf=-55:nr=12:tn=1,dynaudnorm=f=300:g=15:m=20:p=0.9,loudnorm=I=-18:TP=-1.5:LRA=14" ;;
     musique)
       f="highpass=f=30,afftdn=nf=-30,loudnorm=I=-14:TP=-1:LRA=11" ;;
   esac
