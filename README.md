@@ -9,6 +9,7 @@ git clone <ce dépôt> && cd Videos
 ./install.sh              # ffmpeg + modèles RNNoise (débruitage voix)  — indispensable
 ./install.sh --ia         # + Real-ESRGAN : agrandissement par IA (GPU Vulkan requis)
 ./install.sh --ia-audio   # + DeepFilterNet : débruitage voix par IA (~2 Go, Python)
+./install.sh --audacity   # + Audacity et la macro « Nettoyage_voix »
 ```
 
 ## 2. Usage rapide
@@ -47,7 +48,16 @@ git clone <ce dépôt> && cd Videos
 
 **Musique** : débruitage FFT doux + normalisation à −14 LUFS.
 
-## 5. Conseils
+## 5. Audacity (retouche du son à la main)
+
+Pour un contrôle fin du son (profil de bruit, égaliseur, clics…), voir **[audacity/GUIDE_AUDACITY.md](audacity/GUIDE_AUDACITY.md)**.
+
+```bash
+./audio_video.sh extraire ma_video.mp4               # -> ma_video.wav, à ouvrir dans Audacity
+./audio_video.sh remettre ma_video.mp4 propre.wav    # -> ma_video_son_propre.mp4 (image intacte)
+```
+
+## 6. Conseils
 
 - **Toujours tester avec `--essai 10`** puis comparer avant de lancer un long encodage.
 - Trop de débruitage = effet « peinture à l'huile » : redescendez à `leger`.

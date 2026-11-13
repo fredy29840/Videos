@@ -3,18 +3,20 @@
 #   ./install.sh            -> ffmpeg + modèles RNNoise (débruitage voix)
 #   ./install.sh --ia       -> + Real-ESRGAN (agrandissement IA, nécessite une carte graphique Vulkan)
 #   ./install.sh --ia-audio -> + DeepFilterNet (débruitage voix IA, Python)
+#   ./install.sh --audacity -> + Audacity et la macro « Nettoyage_voix »
 set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTILS="$DIR/outils"
 mkdir -p "$OUTILS/rnnoise"
 
-IA=0; IA_AUDIO=0
+IA=0; IA_AUDIO=0; AUDACITY=0
 for a in "$@"; do
   case "$a" in
     --ia) IA=1 ;;
     --ia-audio) IA_AUDIO=1 ;;
-    -h|--help) sed -n '2,6p' "$0"; exit 0 ;;
+    --audacity) AUDACITY=1 ;;
+    -h|--help) sed -n '2,7p' "$0"; exit 0 ;;
     *) echo "Option inconnue : $a" >&2; exit 1 ;;
   esac
 done
@@ -55,6 +57,16 @@ if [ "$IA_AUDIO" = 1 ]; then
   "$OUTILS/venv/bin/pip" install --upgrade pip
   "$OUTILS/venv/bin/pip" install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
   "$OUTILS/venv/bin/pip" install deepfilternet
+fi
+
+if [ "$AUDACITY" = 1 ]; then
+  echo "==> Audacity"
+  $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y audacity
+  # Dossier des macros : selon la version d'Audacity, l'un ou l'autre est utilisé
+  for d in "$HOME/.config/audacity/Macros" "$HOME/.audacity-data/Macros"; do
+    mkdir -p "$d" && cp "$DIR/audacity/Nettoyage_voix.txt" "$d/"
+  done
+  echo "   Macro installée : Outils > Macros > Nettoyage_voix"
 fi
 
 chmod +x "$DIR"/*.sh
